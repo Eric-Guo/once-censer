@@ -1,0 +1,21 @@
+---
+alwaysApply: false
+description: Repository conventions, coding style, and best practices
+---
+### Conventions and Best Practices
+
+- **Rails MVC**: Keep controllers thin, push domain logic to models and POROs.
+- **Concerns**: Reuse cross-cutting behavior via concerns in `app/controllers/concerns` and `app/models/concerns`.
+- **Hotwire-first**: Prefer Turbo Streams for in-place updates; Stimulus for client behavior.
+- **Naming**: Use clear, descriptive names. Avoid abbreviations.
+- **Errors**: Let exceptions bubble when appropriate; handle with clarity. Avoid empty rescues.
+- **Formatting**: Match existing style, multi-line where clearer, avoid long chains in views.
+- **Type/Null guards**: Use early returns and guard clauses.
+- **Background work**: Use jobs for push notifications/webhooks (see `lib/web_push` and `app/jobs`).
+
+### Useful entry points
+- Global layout: [application.html.erb](mdc:app/views/layouts/application.html.erb)
+- JS bootstrap: [application.js](mdc:app/javascript/application.js)
+- Importmap: [config/importmap.rb](mdc:config/importmap.rb)
+- Realtime base: [application_cable/connection.rb](mdc:app/channels/application_cable/connection.rb)
+

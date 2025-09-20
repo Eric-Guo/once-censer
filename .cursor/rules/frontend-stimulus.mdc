@@ -1,0 +1,19 @@
+---
+globs: app/javascript/**,app/views/**/*.erb
+description: Frontend rules for Stimulus controllers, Importmap pins, and JS lifecycle
+---
+### Frontend (Stimulus + Importmap)
+
+- **Entrypoint**: [app/javascript/application.js](mdc:app/javascript/application.js) imports Turbo, Trix/ActionText, then `initializers` and `controllers`.
+- **Stimulus app**: Starts in [controllers/application.js](mdc:app/javascript/controllers/application.js); eager loads in [controllers/index.js](mdc:app/javascript/controllers/index.js).
+- **Importmap pins**: Define libraries and auto-pin folders in [config/importmap.rb](mdc:config/importmap.rb).
+
+### Conventions
+- Put UI behavior in `app/javascript/controllers`. Example: [messages_controller.js](mdc:app/javascript/controllers/messages_controller.js) handles pagination, scroll, and sounds.
+- Wire controllers in views via `data-controller`/`data-action` (see helpers like [messages_helper.rb](mdc:app/helpers/messages_helper.rb)).
+- Use `turbo:before-stream-render` to adjust DOM/scroll before Turbo applies updates.
+
+### Practical notes
+- For new controllers, export default Stimulus `Controller` subclasses, define `static targets/classes/values` as needed.
+- Favor small, composable controllers. Keep business logic in models/controllers on the server.
+

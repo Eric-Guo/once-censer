@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+description: High-level overview and entry points for Once Campfire (Rails + Hotwire)
+---
+### Once Campfire – Project Overview
+
+- **Framework**: Ruby on Rails with Hotwire (Turbo + Stimulus via Importmap).
+- **Root route**: `welcome#show` defined in [routes.rb](mdc:config/routes.rb).
+- **Global controller mixins**: `ApplicationController` includes authentication/authorization and Turbo helpers in [application_controller.rb](mdc:app/controllers/application_controller.rb).
+- **Layout**: Global HTML, meta tags, CSS/JS includes in [application.html.erb](mdc:app/views/layouts/application.html.erb).
+- **Frontend entrypoint**: Importmap + JS boot in [application.js](mdc:app/javascript/application.js). Stimulus app starts in [controllers/application.js](mdc:app/javascript/controllers/application.js) and eagerly loads controllers via [controllers/index.js](mdc:app/javascript/controllers/index.js). Pins live in [importmap.rb](mdc:config/importmap.rb).
+- **Realtime**: ActionCable channels in `app/channels` and Turbo Streams used throughout views.
+- **Domain**: Rooms, messages, users, memberships, sessions. Messages render live with Turbo and broadcast via model callbacks.
+
+### Typical feature flow
+- **Routing**: Add endpoints in [routes.rb](mdc:config/routes.rb).
+- **Controller**: Implement actions under `app/controllers` (e.g., [messages_controller.rb](mdc:app/controllers/messages_controller.rb)).
+- **View**: Render in `app/views/...` (e.g., [rooms/show.html.erb](mdc:app/views/rooms/show.html.erb)).
+- **Turbo Streams**: Hook with `turbo_stream_from` and stream templates (e.g., [messages/create.turbo_stream.erb](mdc:app/views/messages/create.turbo_stream.erb)).
+- **Stimulus**: Add/modify controllers under `app/javascript/controllers` (e.g., [messages_controller.js](mdc:app/javascript/controllers/messages_controller.js)).
+- **Realtime channels**: Subscribe/broadcast via channels (e.g., [room_channel.rb](mdc:app/channels/room_channel.rb)).
+
+### Message lifecycle (quick map)
+- Create: `MessagesController#create` → model `Message` saved → `Message::Broadcasts#broadcast_create` → Turbo append + unread broadcast.
+  - Controller: [messages_controller.rb](mdc:app/controllers/messages_controller.rb)
+  - Model: [message.rb](mdc:app/models/message.rb), [message/broadcasts.rb](mdc:app/models/message/broadcasts.rb)
+  - View stream: [create.turbo_stream.erb](mdc:app/views/messages/create.turbo_stream.erb)
+  - Room stream: `turbo_stream_from` in [rooms/show.html.erb](mdc:app/views/rooms/show.html.erb)
+
+### Where to start
+- New backend feature: route → controller → model/view, use existing concerns in `app/controllers/concerns`.
+- New UI behavior: Stimulus controller in `app/javascript/controllers`, pinned via [importmap.rb](mdc:config/importmap.rb).
+- New realtime behavior: use Turbo Stream helpers or an ActionCable channel in `app/channels`.
+

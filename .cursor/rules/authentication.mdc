@@ -1,0 +1,23 @@
+---
+globs: app/controllers/**,app/channels/**,app/models/**
+description: Authentication/session model, cookies, and controller concern usage
+---
+### Authentication and Sessions
+
+- **Controller concern**: `Authentication` in [app/controllers/concerns/authentication.rb](mdc:app/controllers/concerns/authentication.rb)
+  - Restores or requests auth for each request, supports bot key access.
+  - Sets signed cookie `:session_token` on login.
+  - Helpers: `allow_unauthenticated_access`, `require_unauthenticated_access`, `allow_bot_access`.
+- **Session cookie lookup**: [session_lookup.rb](mdc:app/controllers/concerns/authentication/session_lookup.rb) reads `cookies.signed[:session_token]` and finds `Session`.
+- **Session model**: [session.rb](mdc:app/models/session.rb) generates tokens and refreshes `last_active_at`.
+- **ApplicationController**: includes `Authentication` and other concerns in [application_controller.rb](mdc:app/controllers/application_controller.rb).
+- **Login/Logout**: [sessions_controller.rb](mdc:app/controllers/sessions_controller.rb)
+  - `create`: `User.active.authenticate_by(...)` → `start_new_session_for` → redirect.
+  - `destroy`: deletes push subscription, clears auth cookie, redirects to root.
+- **ActionCable auth**: [application_cable/connection.rb](mdc:app/channels/application_cable/connection.rb) includes `Authentication::SessionLookup` and rejects unauthorized connections.
+
+### Usage tips
+- Controllers needing open access must call `allow_unauthenticated_access` as appropriate.
+- For bot integrations, pass `bot_key` param; controller concern will set `Current.user` accordingly.
+- When adding new channels, rely on `current_user` provided by the connection, not params.
+

@@ -1,0 +1,26 @@
+---
+globs: app/channels/**,app/views/**/*.erb,app/models/**
+description: ActionCable channels, Turbo Streams, and message broadcasting conventions
+---
+### Realtime and Turbo Streams
+
+- **Turbo Streams**: Views subscribe and render updates via `turbo_stream_from` and stream templates.
+  - Rooms subscribe in [rooms/show.html.erb](mdc:app/views/rooms/show.html.erb) using `turbo_stream_from @room, :messages`.
+  - Message create stream: [messages/create.turbo_stream.erb](mdc:app/views/messages/create.turbo_stream.erb).
+- **Model broadcasts**: Messages broadcast on create/replace/remove via model concern [message/broadcasts.rb](mdc:app/models/message/broadcasts.rb).
+  - `broadcast_create` appends to `[room, :messages]` and notifies unread channel.
+- **Controllers**: [messages_controller.rb](mdc:app/controllers/messages_controller.rb) triggers broadcasts on create/update/destroy.
+
+### ActionCable channels
+- **Base room channel**: [room_channel.rb](mdc:app/channels/room_channel.rb) streams for `@room` after membership check.
+- **Presence**: [presence_channel.rb](mdc:app/channels/presence_channel.rb) marks present/absent and broadcasts read events.
+- **Unread rooms**: [unread_rooms_channel.rb](mdc:app/channels/unread_rooms_channel.rb) streams from `"unread_rooms"` for badge updates.
+- **Typing notifications**: [typing_notifications_channel.rb](mdc:app/channels/typing_notifications_channel.rb) handles typing events.
+
+### Push notifications
+- Background push payloads are built in [room/message_pusher.rb](mdc:app/models/room/message_pusher.rb) and queued via `Rails.configuration.x.web_push_pool`.
+
+### Usage tips
+- Prefer Turbo Streams for in-room message updates; use channels for cross-room/user events (presence, unread counts).
+- Use `stream_for model_instance` or `stream_from` with stable identifiers.
+

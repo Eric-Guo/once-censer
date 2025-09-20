@@ -1,0 +1,22 @@
+---
+globs: config/routes.rb
+description: Routes overview and common resources
+---
+### Routing Overview
+
+- Routes are defined in [config/routes.rb](mdc:config/routes.rb).
+- **Root**: `root "welcome#show"`.
+- **Session**: singular `resource :session` with nested `sessions/transfers`.
+- **Accounts**: singular `resource :account` with nested users, bots (and key), join code, logo, custom styles.
+- **Join flow**: `get/post "join/:join_code"` → `UsersController`.
+- **Users**: `resources :users, only: :show` with nested avatar/profile/sidebar and push subscriptions.
+- **Autocompletable**: namespace for `users#index`.
+- **Rooms**: `resources :rooms` with nested `messages` and `rooms` namespace for `opens/closeds/directs` plus room `refresh`, `settings`, `involvement`, and `@:message_id` shortcut.
+- **Messages**: top-level `resources :messages` with nested `boosts`.
+- **PWA**: `webmanifest`, `service-worker` endpoints.
+- **Health**: `get "up" => "rails/health#show"`.
+
+### Tips
+- Prefer singular `resource` for session/account; plural `resources` for collections.
+- Use `direct` routes (e.g., `fresh_account_logo`, `fresh_user_avatar`) for cache-busted asset URLs.
+
