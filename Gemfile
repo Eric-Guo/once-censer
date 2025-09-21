@@ -50,6 +50,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
   gem "faker", require: false
   gem "brakeman", require: false
+  gem "tidewave"
 end
 
 group :test do
