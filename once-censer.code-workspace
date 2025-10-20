@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "explorer.excludeGitIgnore": true,
+    "files.exclude": {
+      "**/_screenshots": true,
+      "**/.circleci": true,
+      "**/.idea": true
+    },
+    "i18n-ally.localesPaths": [
+      "config/locales"
+    ]
+  }
+}
